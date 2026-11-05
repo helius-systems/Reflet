@@ -1,8 +1,11 @@
 package systems.helius.reflet;
 
+import systems.helius.reflet.internal.ExcludeFromGeneratedCoverageReport;
+
 import java.util.Map;
 
 public final class TypeUtils {
+    @ExcludeFromGeneratedCoverageReport
     private TypeUtils() {}
 
     /**

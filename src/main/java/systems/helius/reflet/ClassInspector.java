@@ -100,9 +100,6 @@ public sealed class ClassInspector permits CachingClassInspector {
      */
     public static boolean evaluateTypingMatch(Class<?> targetType, Object value, @Nullable Class<?> originalType) {
         if (originalType != null) {
-            if (originalType == Void.class || originalType == void.class)
-                return true;
-
             if (originalType.isPrimitive()) {
                 return targetType == originalType;
             }

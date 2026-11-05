@@ -25,7 +25,7 @@ class ResultTest {
     }
 
     @Test
-    void GivenTwoEqualResults_WhenComparing_ThenTheyAreEqual() {
+    void GivenTwoEqualResults_WhenComparingHashCode_ThenTheyAreEqual() {
         Result<String, Exception> result1 = Result.ok("Success");
         Result<String, Exception> result2 = Result.ok("Success");
         assertEquals(result1, result2);
@@ -33,7 +33,7 @@ class ResultTest {
     }
 
     @Test
-    void GivenTwoDifferentResults_WhenComparing_ThenTheyAreNotEqual() {
+    void GivenTwoDifferentResults_WhenComparingHashCode_ThenTheyAreNotEqual() {
         Result<String, Exception> result1 = Result.ok("Success");
         Result<String, Exception> result2 = Result.ok("Failure");
         assertNotEquals(result1, result2);
@@ -70,7 +70,7 @@ class ResultTest {
 
         try {
             constructor.newInstance("value", new Exception());
-            fail("Expected IllegalArgumentException to be thrown"); //NOSONAR We want to test the cause of the exception, the surface is just a wrapper.
+            fail("Expected InvocationTargetException to be thrown"); //NOSONAR We want to test the cause of the exception, the surface is just a wrapper.
         } catch (InvocationTargetException e) {
             assertInstanceOf(IllegalArgumentException.class, e.getCause());
         }
@@ -85,7 +85,7 @@ class ResultTest {
 
         try {
             constructor.newInstance(null, null);
-            fail("Expected IllegalArgumentException to be thrown"); //NOSONAR We want to test the cause of the exception, the surface is just a wrapper.
+            fail("Expected InvocationTargetException to be thrown"); //NOSONAR We want to test the cause of the exception, the surface is just a wrapper.
         } catch (InvocationTargetException e) {
             assertInstanceOf(IllegalArgumentException.class, e.getCause());
         }

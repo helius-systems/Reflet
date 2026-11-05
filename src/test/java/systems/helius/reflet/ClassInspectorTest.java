@@ -57,16 +57,6 @@ class ClassInspectorTest {
     }
 
     @Test
-    void GivenVoidOriginalClass_WhenEvaluateTypingMatchWithVoidTargetClass_ThenReturnsTrue() {
-        assertTrue(ClassInspector.evaluateTypingMatch(void.class, null, void.class));
-    }
-
-    @Test
-    void GivenVoidWrapperOriginalType_WhenEvaluateTypingMatch_ThenReturnsTrue() {
-        assertTrue(ClassInspector.evaluateTypingMatch(Object.class, new Object(), Void.class));
-    }
-
-    @Test
     void GivenEnum_WhenGetAllFieldsHierarchical_ThenStopsAtEnumSuperclass() {
         Map<Class<?>, List<Field>> fields = getInstance().getAllFieldsHierarchical(BarEnum.class);
         assertTrue(fields.containsKey(BarEnum.class));

@@ -319,12 +319,12 @@ class AccessorsChainTest {
         }
 
         @Override
-        public boolean accepts(Class<?> current, java.lang.reflect.Field holdingField) {
+        public boolean accepts(Class<?> current, Field holdingField) {
             return true;
         }
 
         @Override
-        public Collection<Content> extract(Object current, java.lang.reflect.Field holdingField,
+        public Collection<Content> extract(Object current, Field holdingField,
                                            IntrospectionContext<?> context,
                                            IntrospectionSettings settings) throws AccessorException {
             if (throwable instanceof RuntimeException runtimeException) {

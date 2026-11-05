@@ -1,10 +1,7 @@
 package systems.helius.reflet.accessors;
 
 import org.junit.jupiter.api.Test;
-import systems.helius.reflet.ClassInspector;
-import systems.helius.reflet.IntrospectionContext;
-import systems.helius.reflet.IntrospectionSettings;
-import systems.helius.reflet.LookupManager;
+import systems.helius.reflet.*;
 import systems.helius.reflet.exceptions.AccessorException;
 
 import java.lang.invoke.MethodHandles;
@@ -43,9 +40,69 @@ class FieldHandlesAccessorTest {
         assertEquals(Set.of("childValue", "baseNumber"), extracted.stream().map(content -> content.holdingField().getName()).collect(java.util.stream.Collectors.toSet()));
     }
 
-    /**
-     * Builds a minimal introspection context for accessor tests.
-     */
+    @Test
+    void GivenUnreadableObject_WhenExtractWithSkipAccessDenialPolicy_ThenFindNothing() throws AccessorException {
+        FieldHandlesAccessor accessor = new FieldHandlesAccessor(new ClassInspector(), new LookupManager());
+        String unreadableObject = "unreadable";
+
+        IntrospectionSettings settings = IntrospectionSettings.builder()
+                .withAccessDenialPolicy(AccessDenialPolicy.SKIP)
+                .build();
+
+        Collection<Content> extracted = accessor.extract(unreadableObject, null, newContext(accessor), settings);
+
+        assertTrue(extracted.isEmpty());
+    }
+
+    @Test
+    void GivenUnreadableObject_WhenExtractWithFailPolicy_ThenThrowsFatal() {
+        FieldHandlesAccessor accessor = new FieldHandlesAccessor(new ClassInspector(), new LookupManager());
+        String unreadableObject = "unreadable";
+
+        IntrospectionSettings settings = IntrospectionSettings.builder()
+                .withAccessDenialPolicy(AccessDenialPolicy.FAIL)
+                .build();
+
+        try {
+            accessor.extract(unreadableObject, null, newContext(accessor), settings);
+            fail("Should have thrown an exception");
+        } catch (AccessorException e) {
+            assertTrue(e.isFatal());
+        }
+    }
+
+    @Test
+    void GivenObjectWithInaccessibleParent_WhenExtractWithSkipAccessDenialPolicy_ThenExtractOnlyReadableFields() throws AccessorException {
+        FieldHandlesAccessor accessor = new FieldHandlesAccessor(new ClassInspector(), new LookupManager());
+        var obj = new ObjectWithInaccessibleParent();
+
+        IntrospectionSettings settings = IntrospectionSettings.builder()
+                .withAccessDenialPolicy(AccessDenialPolicy.SKIP)
+                .build();
+
+        Collection<Content> extracted = accessor.extract(obj, null, newContext(accessor), settings);
+
+        assertEquals(1, extracted.size());
+        assertEquals("readable", extracted.iterator().next().value());
+    }
+
+    @Test
+    void GivenObjectWithInaccessibleParent_WhenExtractWithFailPolicy_ThenThrowsFatal() {
+        FieldHandlesAccessor accessor = new FieldHandlesAccessor(new ClassInspector(), new LookupManager());
+        var obj = new ObjectWithInaccessibleParent();
+
+        IntrospectionSettings settings = IntrospectionSettings.builder()
+                .withAccessDenialPolicy(AccessDenialPolicy.FAIL)
+                .build();
+
+        try {
+            accessor.extract(obj, null, newContext(accessor), settings);
+            fail("Should have thrown an exception");
+        } catch (AccessorException e) {
+            assertTrue(e.isFatal());
+        }
+    }
+
     private static IntrospectionContext<Object> newContext(ContentAccessor accessor) {
         return new IntrospectionContext<>(
                 Object.class,
@@ -79,5 +136,14 @@ class FieldHandlesAccessorTest {
 
         @SuppressWarnings("unused")
         private static final String DERIVED_STATIC = "ignored";
+    }
+
+    /**
+     * Sample class with a parent in a module that is not open to this module.
+     * <p>
+     * Tests should only find the field declared in this class, and not the field declared in the parent class.
+     */
+    private static class ObjectWithInaccessibleParent extends ArrayList<Object> {
+        private final String readableField = "readable"; //NOSONAR
     }
 }
