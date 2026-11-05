@@ -3,8 +3,7 @@
 ![Coverage](.github/badges/jacoco.svg)
 ![Branches](.github/badges/branches.svg)
 
-<img width="7510" height="3008" alt="banniere_HeliusSystems" src="https://github.com/user-attachments/assets/5dc8f932-1a49-48de-ac26-cb99ba9b8e81" />
-
+<img width="1920" height="769" alt="banniere_HeliusSystems_1920px" src="https://github.com/user-attachments/assets/8930348a-91fa-425b-bb3b-8e8981469eee" />
 
 # Reflet: A Reflective Java Library
 Reflet is a Java library that provides reflection and meta-programming utilities.
